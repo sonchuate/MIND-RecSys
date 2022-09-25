@@ -2,7 +2,7 @@
 This example walks through the training and prediction of unilm-fastformer on MIND dataset. <br> 
 Fastformer model refers to [fastformer](https://github.com/wuch15/Fastformer) <br>
 PLM structure refers to [PLM4Rec](https://github.com/wuch15/PLM4NewsRec) and [speedy_mind](https://github.com/microsoft/SpeedyRec/tree/main/speedy_mind)<br>
-After cloning this repo, you can conduct experiments with following commands::
+After cloning this repo, you can conduct experiments with following commands:
 
 ## Results on MIND
 | models   | AUC    | MRR    | nDCG@5 | nDCG@10 |
@@ -46,7 +46,8 @@ python train.py \
 --npratio 4 \
 --beta_for_cache 0.002 \
 --max_step_in_cache 2 \
---savename speedyrec_mind 
+--savename speedyrec_mind \
+--news_dim 256
 ```
 The model will be saved to `./saved_models/`, and validation will be conducted after each epoch.   
 The default pretrained model is UniLM v2, and you can get it from [unilm repo](https://github.com/microsoft/unilm). For other pretrained model, you need set `--pretrained_model==others` and give a new path for `--pretrained_model_path`
