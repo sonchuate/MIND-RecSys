@@ -79,7 +79,7 @@ python submission.py \
 --pretreained_model unilm \
 --root_data_dir ./data/speedy_data/ \
 --num_hidden_layers 8 \
---load_ckpt_name ./speedymind_ckpts/pytorch_model.bin \
+--load_ckpt_name ./speedymind_ckpts/fastformer4rec.pt \
 --batch_size 256 \
 --news_attributes title  \
 --news_dim 256
