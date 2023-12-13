@@ -82,6 +82,7 @@ class NewsInfo:
             self.update_dict(self.subcategory_dict, subcategory)
 
     def process_news_file(self, file):
+        print(f'---Processing news, writing to {file}---')
         with open(file, "r") as f:
             for line in tqdm(f):
                 self.parse_line(line)
@@ -122,6 +123,7 @@ def get_doc_input(news, news_index, category_dict,
     else:
         news_subcategory = None
 
+    print(f'---Processing news---')
     for key in tqdm(news):
         title, abstract, body, category, subcategory = news[key]
         doc_index = news_index[key]
@@ -144,10 +146,8 @@ def get_doc_input(news, news_index, category_dict,
         if 'subcategory' in args.news_attributes:
             news_subcategory[doc_index, 0] = subcategory_dict[subcategory] if subcategory in subcategory_dict else 0
 
-
     return news_title, news_title_attmask, news_abstract, news_abstract_attmask, \
            news_body, news_body_attmask, news_category, news_subcategory
-
 
 
 def get_news_feature(args, mode='train', category_dict=None, subcategory_dict=None):
@@ -165,8 +165,8 @@ def get_news_feature(args, mode='train', category_dict=None, subcategory_dict=No
     else:
         # process news info
         news_info.process_news_file(
-            os.path.join(args.root_data_dir,
-                         f'{mode}/docs.tsv'))
+            os.path.join(args.root_data_dir, f'{mode}/docs.tsv')
+        )
         with open(cache_file, 'wb') as f:
             pickle.dump(news_info, f)
         logging.info(f"Cached data saved at {cache_file}")
@@ -201,6 +201,7 @@ def infer_news(model, device, news_combined, batch_size=64):
                                  num_workers=0)
 
     news_vecs = []
+    print('---Starting inference---')
     with torch.no_grad():
         for input_ids in tqdm(news_dataloader):
             input_ids = input_ids.to(device).long()

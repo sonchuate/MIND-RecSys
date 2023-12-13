@@ -57,7 +57,7 @@ def train(local_rank,
           data_files,
           end_dataloder,
           end_train,
-          dist_training=True):
+          dist_training=False):
 
     setuplogger()
     try:
@@ -142,7 +142,7 @@ def train(local_rank,
             ddp_model.train()
             pad_doc = torch.zeros(1, args.news_dim, device=device)
 
-            for cnt, batch in tqdm(enumerate(dataloader)):
+            for batch in tqdm(dataloader):
                 with torch.autograd.set_detect_anomaly(True):
                     address_cache, update_cache, satrt_inx, end_inx, batch = batch
                     global_step += 1

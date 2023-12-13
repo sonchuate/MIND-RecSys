@@ -3,7 +3,7 @@ from torch import nn
 from transformers import BertConfig
 from utility.utils import MODEL_CLASSES
 from models.fast import Fastformer
-from transformers.modeling_bert import BertModel
+from transformers.models.bert.modeling_bert import BertModel
 ffconfig = BertConfig.from_json_file('models/ffconfig.json')
 
 
