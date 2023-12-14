@@ -3,11 +3,12 @@ import logging
 import fnmatch
 import random
 import numpy as np
-import tensorflow as tf
 from queue import Queue
 from concurrent.futures import ThreadPoolExecutor
 import sys
 import traceback
+import tensorflow.compat.v1 as tf
+tf.disable_v2_behavior()
 
 def get_files(dirname, filename_pat="*", recursive=False):
     if not tf.io.gfile.exists(dirname):
@@ -66,7 +67,7 @@ class StreamReader:
 
         dataset = dataset.batch(batch_size)
         dataset = dataset.prefetch(3)
-        self.next_batch = dataset.make_one_shot_iterator().get_next()
+        self.next_batch = tf.compat.v1.data.make_one_shot_iterator(dataset).get_next()
         self.session = None
 
 
@@ -74,7 +75,7 @@ class StreamReader:
         # print(f"StreamReader reset(), {self.session}, pid:{threading.currentThread()}")
         if self.session:
             self.session.close()
-        self.session = tf.Session()
+        self.session = tf.compat.v1.Session()
         self.endofstream = False
 
     def get_next(self):
@@ -248,7 +249,7 @@ class StreamReaderTest(StreamReader):
         
         dataset = dataset.batch(batch_size)
         dataset = dataset.prefetch(1)
-        self.next_batch = dataset.make_one_shot_iterator().get_next()
+        self.next_batch = tf.compat.v1.data.make_one_shot_iterator(dataset).get_next()
         self.session = None
 
 
