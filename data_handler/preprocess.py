@@ -35,7 +35,7 @@ class NewsInfo:
                 args.pretrained_model_path,
                 config=self.config)
             
-    def sent_encode(self, inputs):
+    def sent_encode(self, inputs, max_len):
         batch_size, num_words = inputs.shape
         num_words = num_words // 2
         text_ids = torch.narrow(inputs, 1, 0, num_words)
