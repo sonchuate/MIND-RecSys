@@ -102,8 +102,9 @@ class NewsInfo:
     def process_news_file(self, file):
         print(f'---Processing news, writing to {file}---')
         with open(file, "r") as f:
-            for line in tqdm(f):
-                self.parse_line(line)
+            data = f.read()
+        for line in tqdm(data.split('\n')):
+            self.parse_line(line)
             
 
 def get_doc_input(news, news_index, category_dict,
