@@ -25,9 +25,25 @@ class NewsInfo:
         else:
             self.category_dict, self.subcategory_dict = {}, {}
 
-        _, _, tokenizer_class = MODEL_CLASSES[args.pretreained_model]
+        config_class, model_class, tokenizer_class = MODEL_CLASSES[args.pretreained_model]
         self.tokenizers = tokenizer_class.from_pretrained(self.args.pretrained_model_path, do_lower_case=True)
+        self.config = config_class.from_pretrained(args.pretrained_model_path, output_hidden_states=True)
+        if 'speedymind_ckpts' in args.pretrained_model_path:
+            self.unicoder = model_class(config=self.config)
+        else:
+            self.unicoder = model_class.from_pretrained(
+                args.pretrained_model_path,
+                config=self.config)
+            
+    def sent_encode(self, inputs):
+        batch_size, num_words = inputs.shape
+        num_words = num_words // 2
+        text_ids = torch.narrow(inputs, 1, 0, num_words)
+        text_attmask = torch.narrow(inputs, 1, num_words, num_words)
 
+        sent_vec = self.unicoder(text_ids, text_attmask)[0]  # B L D
+        return sent_vec
+    
     def update_dict(self, dict, key, value=None):
         if key not in dict:
             if value is None:
@@ -43,9 +59,9 @@ class NewsInfo:
 
     def _parse_news_attrs(self, attr_raw_values):
         parser = {
-            'title': (self.sent_tokenize, [], {"max_len":self.args.num_words_title}),
-            'body': (self.sent_tokenize, [], {"max_len": self.args.num_words_body}),
-            'abstract': (self.sent_tokenize, [], {"max_len": self.args.num_words_abstract}),
+            'title': (self.sent_encode, [], {"max_len":self.args.num_words_title}),
+            'body': (self.sent_encode, [], {"max_len": self.args.num_words_body}),
+            'abstract': (self.sent_encode, [], {"max_len": self.args.num_words_abstract}),
             'category': (lambda x: x, None, {}),
             'subcategory': (lambda x: x, None, {}),
         }
